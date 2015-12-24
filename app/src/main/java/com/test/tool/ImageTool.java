@@ -38,7 +38,6 @@ public class ImageTool {
     //img_cuser 头像
     //img_question 问题图片
     //img_chatLog 聊天图片
-
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
                                                          int reqWidth, int reqHeight) {
 
@@ -101,7 +100,7 @@ public class ImageTool {
     public static Bitmap readBitmap(Context context, int resId,int width,int height)
     {
         BitmapFactory.Options opt = new BitmapFactory.Options();
-        opt.inPreferredConfig = Bitmap.Config.RGB_565;
+        opt.inPreferredConfig = Bitmap.Config.ARGB_4444;
         opt.outWidth=width;
         opt.outHeight=height;
         InputStream is = context.getResources().openRawResource(resId);
@@ -112,7 +111,7 @@ public class ImageTool {
     public static Bitmap readBitmap(Context context, int resId)
     {
         BitmapFactory.Options opt = new BitmapFactory.Options();
-        opt.inPreferredConfig = Bitmap.Config.RGB_565;
+        opt.inPreferredConfig = Bitmap.Config.ARGB_4444;
         InputStream is = context.getResources().openRawResource(resId);
         return BitmapFactory.decodeStream(is, null, opt);
     }

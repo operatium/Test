@@ -1,0 +1,132 @@
+package com.test;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+
+import android.animation.ValueAnimator;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.view.View;
+import android.view.animation.LinearInterpolator;
+
+public class MyAnimation extends FlyBird{
+
+    /** 上一帧播放时间 **/
+    private long mLastPlayTime = 0;
+    /** 播放当前帧的ID **/
+    private int mPlayID = 0;
+    /** 动画frame数量 **/
+    private int mFrameCount = 0;
+    /** 用于储存动画资源图片 **/
+    private Bitmap[] mframeBitmap = null;
+    /** 是否循环播放 **/
+    private boolean mIsLoop = false;
+    /** 播放结束 **/
+    private boolean mIsend = false;
+    /** 动画播放间隙时间 **/
+    private static final int ANIM_TIME = 100;
+    private Bitmap Res;
+    private ArrayList<Rect> plists;
+
+    /**
+     * 构造函数
+     * @param context
+     * @param frameBitmapID
+     * @param isloop
+     */
+    public MyAnimation(Context context, int [] frameBitmapID, boolean isloop) {
+        mFrameCount = frameBitmapID.length;
+        mframeBitmap = new Bitmap[mFrameCount];
+        for(int i =0; i < mFrameCount; i++) {
+            mframeBitmap[i] = ReadBitMap(context,frameBitmapID[i]);
+        }
+        mIsLoop = isloop;
+    }
+
+    /**
+     * 构造函数
+     * @param context
+     * @param frameBitmap
+     * @param isloop
+     */
+    public MyAnimation(Context context, Bitmap [] frameBitmap, boolean isloop) {
+        mFrameCount = frameBitmap.length;
+        mframeBitmap = frameBitmap;
+        mIsLoop = isloop;
+    }
+
+    public MyAnimation(Bitmap Res, ArrayList<Rect> plists,boolean mIsLoop) {
+        this.Res = Res;
+        this.plists = plists;
+        this.mIsLoop = mIsLoop;
+    }
+
+    /**
+     * 绘制动画中的其中一帧
+     * @param Canvas
+     * @param paint
+     * @param x
+     * @param y
+     * @param frameID
+     */
+    public void DrawFrame(Canvas Canvas, Paint paint, int x, int y,int frameID) {
+        Canvas.drawBitmap(mframeBitmap[frameID], x, y, paint);
+    }
+
+    /**
+     * 绘制动画
+//     * @param Canvas
+//     * @param paint
+//     * @param x
+//     * @param y
+     */
+    public void DrawAnimation(Canvas canvas, Paint paint, int index) {
+        //如果没有播放结束则继续播放
+        if (!mIsend) {
+            canvas.drawBitmap(Res,plists.get(index),new Rect(0,0,canvas.getWidth(),canvas.getHeight()),paint);
+            long time = System.currentTimeMillis();
+            if (time - mLastPlayTime > ANIM_TIME) {
+                mPlayID++;
+                mLastPlayTime = time;
+                if (mPlayID >= mFrameCount) {
+                    //标志动画播放结束
+                    mIsend = true;
+                    if (mIsLoop) {
+                        //设置循环播放
+                        mIsend = false;
+                        mPlayID = 0;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 读取图片资源
+     * @param context
+     * @param resId
+     * @return
+     */
+    public Bitmap ReadBitMap(Context context, int resId) {
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inPreferredConfig = Bitmap.Config.RGB_565;
+        opt.inPurgeable = true;
+        opt.inInputShareable = true;
+        // 获取资源图片
+        InputStream is = context.getResources().openRawResource(resId);
+        return BitmapFactory.decodeStream(is, null, opt);
+    }
+
+    @Override
+    public void start(int width, int height, int time, View view) {
+        super.start(width, height, time, view);
+    }
+
+    @Override
+    public void fly(View view) {
+    }
+}

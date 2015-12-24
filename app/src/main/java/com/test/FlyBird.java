@@ -9,7 +9,7 @@ import android.view.animation.LinearInterpolator;
  */
 public class FlyBird {
 
-    public void move(final int width , final int height, int time, final View view) {
+    public void start(final int width , final int height, int time, final View view) {
         ValueAnimator xValue = ValueAnimator.ofFloat(0, 1);
         xValue.setDuration(time);
         xValue.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -18,10 +18,16 @@ public class FlyBird {
                 int x = (int) bezierat(0,width/3,width*2/3,width, (Float) animation.getAnimatedValue());
                 int y = (int) bezierat(0,height,height,0, (Float) animation.getAnimatedValue());
                 moveViewByLayout(view, x, y);
+                fly(view);
             }
         });
         xValue.setInterpolator(new LinearInterpolator());
         xValue.start();
+    }
+
+    public void fly(final View view)
+    {
+
     }
 
     private void moveViewByLayout(View view, int rawX, int rawY) {
